@@ -12,14 +12,13 @@ const port = process.env.PORT || 3000;
 
 // Enable CORS for all routes
 app.use(cors());
-
-
-mongoose.connect('mongodb+srv://314worldgravity:Royalkaf98@cluster0.kbbf8w3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    ssl: true,  // Ensure SSL/TLS is enabled
-    authSource: 'admin',  // Optional: specify the authentication database
-    retryWrites: true,  // Optional: enable retryable writes
+mongoose.connect("mongodb+srv://314worldgravity:Royalkaf98@cluster0.kbbf8w3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
+    // Options to use new URL parser and ensure server discovery and monitoring are enabled
+    useNewUrlParser: true, // No longer necessary but kept for backward compatibility
+    useUnifiedTopology: true, // No longer necessary but kept for backward compatibility
+    serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of default 30s
+    socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+    // Other options can be added as per your application's requirements
 });
 
 const db = mongoose.connection;
