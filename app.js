@@ -1,9 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const routes = require('./routes/index'); // Correct path to index.js
+const routes = require('./routes/index');
 const dotenv = require('dotenv');
-const cors = require('cors'); // Import cors
+const cors = require('cors');
 
 dotenv.config();
 
@@ -14,8 +14,8 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 
 mongoose.connect(process.env.DATABASE_URL, {
-    // useNewUrlParser: true,
-    // useUnifiedTopology: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 });
 
 const db = mongoose.connection;
@@ -26,7 +26,7 @@ db.once('open', () => {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/', routes); // Mount all routes from index.js
+app.use('/', routes);
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
