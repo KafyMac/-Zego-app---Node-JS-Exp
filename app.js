@@ -12,9 +12,9 @@ const port = process.env.PORT || 3000;
 
 // Enable CORS for all routes
 app.use(cors());
-const { DATABASE_URL } = process.env;
 
-mongoose.connect(process.env.DATABASE_URL, {
+
+mongoose.connect('mongodb+srv://314worldgravity:Royalkaf98@cluster0.kbbf8w3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     ssl: true,  // Ensure SSL/TLS is enabled
