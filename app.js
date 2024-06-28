@@ -14,11 +14,12 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 const { DATABASE_URL } = process.env;
 
-mongoose.connect(DATABASE_URL, {
-    // Remove useNewUrlParser and useUnifiedTopology options
-    serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of default 30s
-    socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
-    // Other options can be added as per your application's requirements
+mongoose.connect(process.env.DATABASE_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    ssl: true,  // Ensure SSL/TLS is enabled
+    authSource: 'admin',  // Optional: specify the authentication database
+    retryWrites: true,  // Optional: enable retryable writes
 });
 
 const db = mongoose.connection;
