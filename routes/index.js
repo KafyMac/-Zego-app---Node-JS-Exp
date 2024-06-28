@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-
-router.get('/', (req, res) => {
-    res.send('Hello World from Router!');
-});
+const registerRouter = require('./register'); // Correct path to register.js
+// Mount the register router
+router.use('/', registerRouter);
 
 module.exports = router;
