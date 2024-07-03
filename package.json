@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "build": "netlify deploy --prod"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +22,10 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
     "mongoose": "^8.4.4",
+    "netlify-cli": "^17.32.0",
+    "netlify-lambda": "^2.0.16",
     "passport": "^0.7.0",
+    "serverless-http": "^3.2.0",
     "vercel": "^34.2.8"
   },
   "devDependencies": {

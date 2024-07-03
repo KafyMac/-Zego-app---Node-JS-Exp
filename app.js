@@ -4,11 +4,14 @@ const bodyParser = require('body-parser');
 const routes = require('./routes/index');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const serverless = require("serverless-http");
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+module.exports.handler = serverless(app);
 
 // Enable CORS for all routes
 app.use(cors());
@@ -25,6 +28,10 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
     console.log('Connected to MongoDB');
+});
+
+router.get("/", (req, res) => {
+    res.send("App is running..");
 });
 
 app.use(bodyParser.json());

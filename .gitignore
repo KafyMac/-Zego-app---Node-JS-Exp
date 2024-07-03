@@ -67,3 +67,7 @@ typings/
 # Temporary files
 *.tmp
 *.temp
+
+# depolyment files
+node_modules/
+.netlify
