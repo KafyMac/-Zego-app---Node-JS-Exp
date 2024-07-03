@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const routes = require('./routes/index');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const http = require('http');
+const routes = require('./routes/index');  // Ensure this path is correct
 
 dotenv.config();
 
@@ -16,10 +16,9 @@ app.use(cors());
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://314worldgravity:Royalkaf98@cluster0.kbbf8w3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,
+    tls: true  // Ensure TLS is used
 });
 
 const db = mongoose.connection;
@@ -32,7 +31,7 @@ db.once('open', () => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Routes
+// Use the routes
 app.use('/', routes);
 
 // Create and start the server
