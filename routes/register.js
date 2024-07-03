@@ -14,4 +14,8 @@ router.post('/admin/login', loginController.loginUser);
 // user list api
 router.get('/admin/getAllUser', listUserController.getAllUsers);
 
+router.get("/", (req, res) => {
+    res.send("App is running..");
+});
+
 module.exports = router;

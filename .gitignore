@@ -69,5 +69,4 @@ typings/
 *.temp
 
 # depolyment files
-node_modules/
 .netlify

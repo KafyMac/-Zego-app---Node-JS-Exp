@@ -1,6 +1,5 @@
 const passport = require('passport');
 const { ROLE_RIGHTS, USER_ROLE } = require('../config/authConstant');
-// const util = require("../utils/messages");
 
 const verifyCallback = (req, resolve, reject, requiredRights) => async (err, user, info) => {
     if (err || info || !user) {
