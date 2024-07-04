@@ -61,8 +61,6 @@ module.exports = {
                 return failureResponse(res, 400, "No User found");
             }
 
-            console.log(currentUser, "currentUser")
-            console.log(userToUnfollow, "userToUnfollow")
             if (!userToUnfollow) {
                 return failureResponse(res, 401, "Failed to unfollow this user");
             }
@@ -98,7 +96,37 @@ module.exports = {
         }
     },
 
-    async getFollowedUsers(req, res) {
+    async getNotFollowingUsers(req, res) {
+        const currentUserId = req.user._id; // Assuming the user ID is available in the req.user object
+
+        try {
+            const currentUser = await User.findById(currentUserId);
+
+            if (!currentUser) {
+                return failureResponse(res, 400, "No User found");
+            }
+
+            const users = await User.find({
+                _id: { $ne: currentUserId },
+                followers: { $nin: [currentUserId] },
+                _id: { $nin: currentUser.following }
+            }).select('-password -followers -following');
+
+            const filteredUsers = users.filter(user => !user._id.equals(currentUserId));
+
+            const responseData = {
+                users: filteredUsers,
+                total: filteredUsers.length
+            };
+
+            return successResponse(responseData, res, "Successfully fetched users you are not following");
+        } catch (err) {
+            console.error(err);
+            return failureResponse(res, 400, "Error fetching users you are not following", {});
+        }
+    },
+
+    async getFollowing(req, res) {
         const currentUserId = req.user._id; // Assuming the user ID is available in the req.user object
 
         try {
@@ -107,28 +135,35 @@ module.exports = {
             if (!currentUser) {
                 return failureResponse(res, 400, "No User found");
             }
-
-            return successResponse(currentUser.following, res, "Successfully fetched followed users");
+            if (currentUser.following.length > 0)
+                return successResponse(currentUser.following, res, "Successfully fetched followed users");
+            else {
+                return successResponse([], res, "You are not following anyone");
+            }
         } catch (err) {
             console.error(err);
             return failureResponse(res, 400, "Error fetching followed users", {});
         }
     },
 
-    async getUnfollowedUsers(req, res) {
+    async getFollowers(req, res) {
         const currentUserId = req.user._id; // Assuming the user ID is available in the req.user object
 
         try {
-            const users = await User.find({ _id: { $ne: currentUserId }, followers: { $nin: [currentUserId] } });
+            const currentUser = await User.findById(currentUserId).populate('followers', '_id name mobileNumber email');
 
-            if (!users) {
+            if (!currentUser) {
                 return failureResponse(res, 400, "No User found");
             }
 
-            return successResponse(users, res, "Successfully fetched unfollowed users");
+            if (currentUser.followers.length > 0) {
+                return successResponse(currentUser.followers, res, "Successfully fetched users following you");
+            } else {
+                return successResponse([], res, "No users are following you");
+            }
         } catch (err) {
             console.error(err);
-            return failureResponse(res, 400, "Error fetching unfollowed users", {});
+            return failureResponse(res, 400, "Error fetching users following you", {});
         }
     }
 };

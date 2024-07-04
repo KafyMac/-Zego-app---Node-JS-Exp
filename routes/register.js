@@ -21,11 +21,14 @@ router.post('/admin/follow', auth, trackAPi.followUser);
 // Route for unfollowing a user
 router.post('/admin/unfollow', auth, trackAPi.unfollowUser);
 
-//show followed users
-router.get('/admin/get/follow', auth, trackAPi.getFollowedUsers);
+//get unfollowed users
+router.get('/admin/get/notFollowing', auth, trackAPi.getNotFollowingUsers);
 
-//show unfollowed users
-router.get('/admin/get/unfollow', auth, trackAPi.getUnfollowedUsers);
+//get following users
+router.get('/admin/get/following', auth, trackAPi.getFollowing);
+
+//get users following me
+router.get('/admin/get/followers', auth, trackAPi.getFollowers);
 
 router.get("/", (req, res) => {
     res.send("App is running..");
