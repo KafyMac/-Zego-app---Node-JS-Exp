@@ -9,13 +9,13 @@ module.exports = {
 
             // Check if required parameters are provided
             if (!name || !email || !password || !mobileNumber) {
-                return failureResponse(res, "Name, email, mobile Number, and password are required", 400);
+                return failureResponse(res, 400, "Name, email, mobile Number, and password are required");
             }
 
             // Check if user with the same email already exists
             const existingUser = await User.findOne({ email });
             if (existingUser) {
-                return failureResponse(res, 'User already exists. Please sign in', 400);
+                return failureResponse(res, 400, 'User already exists. Please sign in');
             }
 
             // Hash the password
@@ -40,13 +40,12 @@ module.exports = {
                     email: newUser.email,
                     mobileNumber: newUser.mobileNumber
                 }
-
             };
 
-            // Return success response
-            return successResponse(res, 'User created successfully', responseData);
+            return successResponse(responseData.user, res, "User created successfully");
         } catch (err) {
-            return failureResponse(res, 'Error Creating User', 400, {});
+            console.error(err);
+            return failureResponse(res, 500, "Failed to create user", err.message);
         }
     }
 };

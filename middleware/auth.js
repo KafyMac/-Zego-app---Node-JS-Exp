@@ -1,55 +1,36 @@
-const passport = require('passport');
-const { ROLE_RIGHTS, USER_ROLE } = require('../config/authConstant');
+const jwt = require('jsonwebtoken');
+const { failureResponse } = require('../utils/response');
+const User = require('../models/user');
 
-const verifyCallback = (req, resolve, reject, requiredRights) => async (err, user, info) => {
-    if (err || info || !user) {
-        return reject("Unauthorized User");
+module.exports = async (req, res, next) => {
+    // Get token from header
+    let token = req.headers.authorization;
+
+    // Check if no token
+    if (!token) {
+        return failureResponse(res, 400, "Token is not available");
     }
-    req.user = user;
-    if (!user.isActive) {
-        return reject("User is deactivated");
+
+    // Remove Bearer prefix if it exists
+    if (token.startsWith("Bearer ")) {
+        token = token.slice(7, token.length).trimLeft();
     }
-    if (requiredRights.length) {
-        for (const role in USER_ROLE) {
-            if (USER_ROLE[role] === user.role) {
-                const userRights = ROLE_RIGHTS[user.role];
-                const hasRequiredRights = requiredRights.some((requiredRight) => userRights.includes(requiredRight));
-                if (!hasRequiredRights || !user.id) {
-                    return reject('Unauthorized user');
-                }
-            }
+
+    // Verify token
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Use the secret from environment variables
+        req.user = decoded; // Attach the entire decoded object, assuming it contains user details
+
+        // Check if user exists in the database
+        const findUser = await User.findById(decoded.userId);
+        if (!findUser) {
+            return failureResponse(res, 400, "User not authorized");
         }
-    }
-    resolve();
-};
 
-const auth = (...requiredRights) => async (req, res, next) => {
-    let url = req.originalUrl;
-    if (url.includes('admin')) {
-        return new Promise((resolve, reject) => {
-            passport.authenticate('admin-rule', { session: false }, verifyCallback(req, resolve, reject, requiredRights))(
-                req,
-                res,
-                next
-            );
-        })
-            .then(() => next())
-            .catch((err) => {
-                return util.unAuthorizedRequest(err, res);
-            });
-    } else if (url.includes('device')) {
-        return new Promise((resolve, reject) => {
-            passport.authenticate('device-rule', { session: false }, verifyCallback(req, resolve, reject, requiredRights))(
-                req,
-                res,
-                next
-            );
-        })
-            .then(() => next())
-            .catch((err) => {
-                return util.unAuthorizedRequest(err, res);
-            });
+        req.user = findUser; // Attach the found user object to the request
+        next();
+    } catch (err) {
+        console.log("error", err);
+        return failureResponse(res, 400, "Token is not valid");
     }
 };
-
-module.exports = auth;
