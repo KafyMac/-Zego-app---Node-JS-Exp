@@ -3,8 +3,9 @@ const { successResponse, failureResponse } = require('../utils/response');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const serviceAccount = JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'base64').toString('utf8'));
-if (!admin.apps.length) {
+const serviceAccount = process.env.GOOGLE_APPLICATION_CREDENTIALS ? JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'base64').toString('utf8')) : null;
+
+if (serviceAccount && !admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
         projectId: "zego-e33a6",
