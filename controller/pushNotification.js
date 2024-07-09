@@ -1,7 +1,10 @@
 const admin = require('firebase-admin');
+const functions = require('firebase-functions');
 const { successResponse, failureResponse } = require('../utils/response');
 const dotenv = require('dotenv');
 dotenv.config();
+
+try { admin.initializeApp(functions.config().firebase); } catch (e) { } // You do that because the admin SDK can only be initialized once.
 
 const serviceAccount = process.env.GOOGLE_APPLICATION_CREDENTIALS ? JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'base64').toString('utf8')) : null;
 
