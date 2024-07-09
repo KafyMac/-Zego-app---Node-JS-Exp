@@ -3,7 +3,6 @@ const { successResponse, failureResponse } = require('../utils/response');
 const dotenv = require('dotenv');
 dotenv.config();
 
-console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS, "serviceAccount")
 const serviceAccount = JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'base64').toString('utf8'));
 if (!admin.apps.length) {
     admin.initializeApp({
