@@ -1,7 +1,10 @@
 const admin = require('firebase-admin');
 const { successResponse, failureResponse } = require('../utils/response');
-const serviceAccount = require("/Users/kafeel/Desktop/zego-express-js/-Zego-app---Node-JS-Exp/zego-e33a6-firebase-adminsdk-zj7m0-22c951d7d4.json");
+const dotenv = require('dotenv');
+dotenv.config();
 
+console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS, "serviceAccount")
+const serviceAccount = JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'base64').toString('utf8'));
 if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),

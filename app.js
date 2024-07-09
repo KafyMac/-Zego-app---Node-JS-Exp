@@ -20,6 +20,8 @@ mongoose.connect(process.env.DATABASE_URL || "", {
     tls: true
 });
 
+console.log('Connecting to MongoDB', process.env.DATABASE_URL)
+
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
