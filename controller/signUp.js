@@ -5,11 +5,11 @@ const { successResponse, failureResponse } = require("../utils/response");
 module.exports = {
     async createUser(req, res) {
         try {
-            const { name, email, mobileNumber, password } = req.body;
+            const { name, email, mobileNumber, password, fcmToken } = req.body;
 
             // Check if required parameters are provided
-            if (!name || !email || !password || !mobileNumber) {
-                return failureResponse(res, 400, "Name, email, mobile Number, and password are required");
+            if (!name || !email || !password || !mobileNumber || !fcmToken) {
+                return failureResponse(res, 400, "Name, email, mobile Number, password, and fcmtoken are required");
             }
 
             // Check if user with the same email already exists
@@ -27,18 +27,20 @@ module.exports = {
                 name,
                 email,
                 mobileNumber,
-                password: hashedPassword
+                password: hashedPassword,
+                fcmToken
             });
 
             // Save the user to the database
-            await newUser.save();
+            const savedUser = await newUser.save();
 
             // Return the new user object excluding sensitive fields
             const responseData = {
                 user: {
-                    name: newUser.name,
-                    email: newUser.email,
-                    mobileNumber: newUser.mobileNumber
+                    name: savedUser.name,
+                    email: savedUser.email,
+                    mobileNumber: savedUser.mobileNumber,
+                    fcmToken: savedUser.fcmToken
                 }
             };
 
