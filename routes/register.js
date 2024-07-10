@@ -7,6 +7,7 @@ const listUserController = require('../controller/listUser');
 const trackAPi = require('../controller/userTrack');
 const sendNotification = require('../controller/pushNotification');
 const getStream = require('../controller/getStream');
+const getProfile = require('../controller/myProfile');
 
 // creating user api
 router.post('/add/user', userController.createUser);
@@ -40,6 +41,9 @@ router.get('/admin/getAllStreams', auth, getStream.getAllStream);
 
 // update stream end time
 router.post('/admin/updateStreamEndTime', auth, getStream.updateStreamEndTime);
+
+// to get my profile
+router.get('/admin/get/profile', auth, getProfile.getProfile);
 
 router.get("/", (req, res) => {
     res.send("App is running..");
