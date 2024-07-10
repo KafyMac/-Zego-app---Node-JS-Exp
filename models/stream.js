@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 // Define the user schema
 const StreamSchema = Schema({
+    liveID: { type: String, required: true },
     userId: { type: String, required: true },
     username: { type: String, required: true },
     fcmToken: { type: String, required: true },

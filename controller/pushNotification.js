@@ -5,14 +5,15 @@ const Stream = require('../models/stream');
 module.exports = {
     async sendMessage(req, res) {
         try {
-            const { fcmToken, userId, username } = req.body;
+            const { fcmToken, userId, username, liveID } = req.body;
 
-            if (!fcmToken || !userId || !username) {
-                return failureResponse(res, 400, "FCM token, userId, and username are required");
+            if (!fcmToken || !userId || !username || !liveID) {
+                return failureResponse(res, 400, "FCM token, userId, liveID, and username are required");
             }
 
             // Create new stream document
             const newStream = new Stream({
+                liveID,
                 userId,
                 username,
                 fcmToken
