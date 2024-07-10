@@ -6,6 +6,7 @@ const loginController = require('../controller/login');
 const listUserController = require('../controller/listUser');
 const trackAPi = require('../controller/userTrack');
 const sendNotification = require('../controller/pushNotification');
+const getStream = require('../controller/getStream');
 
 // creating user api
 router.post('/add/user', userController.createUser);
@@ -33,6 +34,12 @@ router.get('/admin/get/followers', auth, trackAPi.getFollowers);
 
 // to send user push notifications
 router.post('/admin/sendNotifications', auth, sendNotification.sendMessage);
+
+// get all streams
+router.get('/admin/getAllStreams', auth, getStream.getAllStream);
+
+// update stream end time
+router.post('/admin/updateStreamEndTime', auth, getStream.updateStreamEndTime);
 
 router.get("/", (req, res) => {
     res.send("App is running..");

@@ -28,7 +28,7 @@ if (serviceAccount && !admin.apps.length) {
     },
         functions.config().firebase);
 
-    const firestore = getFirestore(admin.apps[0])
+    getFirestore(admin.apps[0])
 }
 
 // Connect to MongoDB
