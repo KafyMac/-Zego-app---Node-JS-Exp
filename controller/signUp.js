@@ -9,7 +9,7 @@ module.exports = {
 
             // Check if required parameters are provided
             if (!name || !email || !password || !mobileNumber || !fcmToken) {
-                return failureResponse(res, 400, "Name, email, mobile Number, password, and fcmtoken are required");
+                return failureResponse(res, 400, "Name, email, mobile Number, password, and fcmToken are required");
             }
 
             // Check if user with the same email already exists
@@ -22,13 +22,13 @@ module.exports = {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
 
-            // Create a new user instance
+            // Create a new user instance with fcmTokens as an array
             const newUser = new User({
                 name,
                 email,
                 mobileNumber,
                 password: hashedPassword,
-                fcmToken
+                fcmTokens: [fcmToken]  // Store fcmToken in an array
             });
 
             // Save the user to the database
@@ -40,7 +40,7 @@ module.exports = {
                     name: savedUser.name,
                     email: savedUser.email,
                     mobileNumber: savedUser.mobileNumber,
-                    fcmToken: savedUser.fcmToken
+                    fcmTokens: savedUser.fcmTokens
                 }
             };
 
