@@ -20,7 +20,6 @@ app.use(cors());
 
 //initialize firebase services
 const serviceAccount = process.env.GOOGLE_APPLICATION_CREDENTIALS ? JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'base64').toString('utf8')) : null;
-
 if (serviceAccount && !admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),

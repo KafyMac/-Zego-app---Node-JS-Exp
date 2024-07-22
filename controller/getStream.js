@@ -2,12 +2,29 @@ const { successResponse, failureResponse } = require('../utils/response');
 const Stream = require('../models/stream');
 
 module.exports = {
-    async getAllStream(req, res) {
+    async getAllActiveStreams(req, res) {
         try {
-            const streams = await Stream.find();
-            successResponse({ streams }, res, "Successfully retrieved streams");
+            const streams = await Stream.find({
+                $or: [
+                    { endedAt: null },
+                    { endedAt: { $exists: false } }
+                ]
+            });
+            successResponse({ streams }, res, "Successfully retrieved active streams");
         } catch (e) {
-            failureResponse(res, 500, "An error occurred while retrieving streams", { error: e.message });
+            failureResponse(res, 500, "An error occurred while retrieving active streams", { error: e.message });
+            console.error(e);
+        }
+    },
+
+    async getAllStreamHistory(req, res) {
+        try {
+            const streams = await Stream.find({
+                endedAt: { $exists: true, $ne: null }
+            }).sort({ endedAt: -1 }); // Sort by endedAt in descending order
+            successResponse({ streams }, res, "Successfully retrieved stream history");
+        } catch (e) {
+            failureResponse(res, 500, "An error occurred while retrieving stream history", { error: e.message });
             console.error(e);
         }
     },

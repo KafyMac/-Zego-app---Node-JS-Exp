@@ -37,7 +37,10 @@ router.get('/admin/get/followers', auth, trackAPi.getFollowers);
 router.post('/admin/sendNotifications', auth, sendNotification.sendMessage);
 
 // get all streams
-router.get('/admin/getAllStreams', auth, getStream.getAllStream);
+router.get('/admin/getAllStreams', auth, getStream.getAllActiveStreams);
+
+// get all history streams
+router.get('/admin/getStreamHistory', auth, getStream.getAllStreamHistory);
 
 // update stream end time
 router.post('/admin/updateStreamEndTime', auth, getStream.updateStreamEndTime);
