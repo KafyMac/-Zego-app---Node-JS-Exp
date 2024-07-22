@@ -1,9 +1,7 @@
-// Example models/user.js
+// models/user.js
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
 
-// Define the user schema
 const userSchema = Schema({
     name: {
         type: String,
@@ -22,14 +20,11 @@ const userSchema = Schema({
         type: String,
         required: true
     },
-    fcmToken: {
-        type: String,
-        required: true
-    },
+    fcmTokens: [{  // This is the only FCM token field we'll use
+        type: String
+    }],
     followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     following: [{ type: Schema.Types.ObjectId, ref: 'User' }]
-
 }, { versionKey: false });
 
-// Create and export the User model
 module.exports = mongoose.model('User', userSchema);

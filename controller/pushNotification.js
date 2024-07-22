@@ -5,10 +5,10 @@ const Stream = require('../models/stream');
 module.exports = {
     async sendMessage(req, res) {
         try {
-            const { fcmToken, userId, username, liveID } = req.body;
+            const { fcmTokens, userId, username, liveID } = req.body;
 
-            if (!fcmToken || !userId || !username || !liveID) {
-                return failureResponse(res, 400, "FCM token, userId, liveID, and username are required");
+            if (!Array.isArray(fcmTokens) || fcmTokens.length === 0 || !userId || !username || !liveID) {
+                return failureResponse(res, 400, "FCM tokens array, userId, liveID, and username are required");
             }
 
             // Create new stream document
@@ -16,7 +16,7 @@ module.exports = {
                 liveID,
                 userId,
                 username,
-                fcmToken
+                fcmTokens
             });
 
             // Save the stream document to the database
@@ -25,9 +25,8 @@ module.exports = {
             const message = {
                 notification: {
                     title: "Zego",
-                    body: username + " is Streaming now!\n Click to join!",
+                    body: `${username} is Streaming now!\n Click to join!`,
                 },
-                token: fcmToken,
                 android: {
                     priority: "high",
                 },
@@ -44,16 +43,20 @@ module.exports = {
                 },
             };
 
-            admin.messaging()
-                .send(message)
-                .then((response) => {
-                    successResponse({ token: fcmToken }, res, "Successfully sent message");
-                    console.log("Successfully sent message:", response);
+            const sendPromises = fcmTokens.map(token =>
+                admin.messaging().send({ ...message, token })
+            );
+
+            Promise.all(sendPromises)
+                .then((responses) => {
+                    successResponse({ tokens: fcmTokens }, res, "Successfully sent messages");
+                    console.log("Successfully sent messages:", responses);
                 })
                 .catch((error) => {
-                    failureResponse(res, 400, "Error sending message", { error: error.message });
-                    console.log("Error sending message:", error);
+                    failureResponse(res, 400, "Error sending messages", { error: error.message });
+                    console.log("Error sending messages:", error);
                 });
+
         } catch (e) {
             failureResponse(res, 500, "An error occurred", { error: e.message });
             console.error(e);

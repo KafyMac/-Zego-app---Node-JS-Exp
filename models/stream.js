@@ -7,7 +7,10 @@ const StreamSchema = Schema({
     liveID: { type: String, required: true },
     userId: { type: String, required: true },
     username: { type: String, required: true },
-    fcmToken: { type: String, required: true },
+    fcmTokens: {
+        type: [String],
+        required: true
+    },
     createdAt: { type: Date, default: Date.now },
     endedAt: { type: Date, default: null }
 }, { versionKey: false });
