@@ -12,13 +12,13 @@ module.exports = {
             }
 
             // Fetch all FCM tokens except the current user's
-            const allFcmTokens = await User.find({ _id: { $ne: user._id } })
-                .select('fcmToken')  // Select the old fcmToken field
-                .lean();  // Convert to plain JavaScript object
+            const allUsers = await User.find({ _id: { $ne: user._id } })
+                .select('fcmTokens')
+                .lean();
 
-            const otherUsersFcmTokens = allFcmTokens
-                .map(u => u.fcmToken)
-                .filter(token => token);  // Remove any null or undefined tokens
+            const otherUsersFcmTokens = allUsers
+                .flatMap(u => u.fcmTokens || [])
+                .filter(token => token); // Remove any null or undefined tokens
 
             // Create a clean user object
             const cleanUser = {
@@ -26,7 +26,7 @@ module.exports = {
                 name: user.name,
                 mobileNumber: user.mobileNumber,
                 email: user.email,
-                fcmTokens: user.fcmTokens || [user.fcmToken].filter(Boolean),  // Use fcmTokens if available, otherwise use fcmToken
+                fcmTokens: user.fcmTokens || [],
                 followers: user.followers,
                 following: user.following
             };
